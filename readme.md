@@ -6,4 +6,5 @@ Votre tâche consiste à concevoir la structure du jeu en implémentant les clas
 - Classe Grid : Représente la grille de jeu, compos ́ee de cases (array à deux dimensions) dans lesquelles les pions peuvent être placés. Méthode pour jouer un pion en indiquant la couleur et la colonne. Méthode pour afficher la grille.
 - Classe Token : Représente les pions utilisés par les joueurs. Attribut pour la couleur du pion (jaune ou rouge).
 - Classe Game : Gère le déroulement du jeu.
+
 Votre conception devra permettre l’affichage de la grille dans la console, avec les pions des joueurs représentés par des caractères différents (par exemple, ”O” pour les pions jaunes et ”X” pour les pions rouges).
