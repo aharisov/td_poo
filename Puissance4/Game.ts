@@ -4,11 +4,11 @@ import { Token } from "./Token";
 
 export class Game {
     private isGameFinished: boolean = false;
-    private pionUser1: Token = new Token('jaune');
-    private pionUser2: Token = new Token('rouge');
+    private readonly pionUser1: Token = new Token('jaune');
+    private readonly pionUser2: Token = new Token('rouge');
     private currentUser: Token;
     private currentPion: string;
-    private gameGrid: Grid = new Grid();
+    private readonly gameGrid: Grid = new Grid();
     private movesCounter: number = 0;
     private winner: string;
 
