@@ -7,11 +7,11 @@ import { Bathroom } from "./Bathroom";
 export class Home {
     private readonly rooms: Room[] = [];
 
-    addRoom(room: Room): void {
+    public addRoom(room: Room): void {
         this.rooms.push(room);    
     }
 
-    getTotalArea(): number {
+    public getTotalArea(): number {
         let cntArea: number = 0;
 
         this.rooms.forEach(room => {
@@ -21,7 +21,7 @@ export class Home {
         return cntArea;
     }
 
-    getFloorArea(floor: number): number {
+    public getFloorArea(floor: number): number {
         let rooms: Room[] = this.rooms.filter(room => room.getFloor == floor);
         let cntArea: number = 0;
 
@@ -32,7 +32,7 @@ export class Home {
         return cntArea;
     }
 
-    getLivingArea(): number {
+    public getLivingArea(): number {
         let cntLivingArea: number = 0;
         let bedrooms: Bedroom[] = this.rooms.filter(room => room instanceof Bedroom);
         let livingRooms: LivingRoom[] = this.rooms.filter(room => room instanceof LivingRoom);
@@ -48,7 +48,7 @@ export class Home {
         return cntLivingArea;
     }
 
-    getNbBedrooms(): number {
+    public getNbBedrooms(): number {
         return this.rooms.filter(room => room instanceof Bedroom).length;
     }
 }
