@@ -14,7 +14,6 @@ export class Grid {
 
                 break;
             }
-            console.log(this.grid[i]);
         }
     }
 
@@ -32,7 +31,6 @@ export class Grid {
         let gridHeader: string = '  1   2   3   4   5   6   7  \n';
         let gridTopBottomLine: string = '+---+---+---+---+---+---+---+\n';
         let gridRows: string = '';
-        let gridLastColumn: string = '';
 
         // draw the grid
         for (let i = 0; i < this.rows; i++) {
@@ -50,13 +48,3 @@ export class Grid {
         return gridHeader + gridTopBottomLine + gridRows + gridTopBottomLine;
     }
 }
-
-// for testing
-let test = new Grid();
-console.log(test.createEmptyGrid());
-test.makeMove('x', 1);
-test.makeMove('o', 1);
-test.makeMove('x', 5);
-test.makeMove('o', 7);
-test.makeMove('x', 7);
-console.log(test.showGrid(), '\n');
