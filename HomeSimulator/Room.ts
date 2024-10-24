@@ -7,11 +7,11 @@ export abstract class Room {
         this.area = area;
     }
 
-    get getFloor() {
+    get getFloor(): number {
         return this.floor;
     }
 
-    get getArea() {
+    get getArea(): number {
         return this.area;
     }
 }

@@ -7,4 +7,8 @@ export class Bedroom extends Room {
         super(floor, area);
         this.beds = beds;
     }
+
+    get getBeds(): number {
+        return this.beds;
+    }
 }

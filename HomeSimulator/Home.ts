@@ -1,154 +1,103 @@
 import { Room } from "./Room";
 import { Bedroom } from "./Bedroom";
 import { LivingRoom } from "./LivingRoom";
-import { Kitchen } from "./Kitchen";
 import { Bathroom } from "./Bathroom";
 import { WC } from "./WC";
 
 export class Home {
-    private readonly rooms: Room[] = [];
+    private rooms: Room[];
+
+    constructor() {
+        this.rooms = [];
+    }
 
     public addRoom(room: Room): void {
         this.rooms.push(room);    
     }
 
-    public countRooms(needle: any): number {
+    public countRooms(needle: any = Room): number {
         let cnt: number = 0;
 
-        this.rooms.forEach(room => {
+        for (let room of this.rooms) {
             if (room instanceof needle) {
                 cnt++;
             }
-        })
+        }
 
         return cnt;
-    }
-
-    public createRoomsArr(needle: any): any[] {
-        let arr: any[] = [];
-
-        this.rooms.forEach(room => {
-            if (room instanceof needle) {
-                arr.push(room);
-            }
-        })
-
-        return arr;
     }
 
     public getTotalArea(): number {
         let cntArea: number = 0;
 
-        this.rooms.forEach(room => {
+        for (let room of this.rooms) {
             cntArea += room.getArea;
-        })
+        }
 
         return cntArea;
     }
 
     public getFloorArea(floor: number): number {
-        // let rooms: Room[] = this.rooms.filter(room => room.getFloor == floor);
-        let floorRooms: Room[] = [];
-
         let cntArea: number = 0;
 
-        this.rooms.forEach(room => {
+        for (let room of this.rooms) {
             if (room.getFloor == floor) {
-                floorRooms.push(room);
+                cntArea += room.getArea;
             }
-        })
-
-        floorRooms.forEach(room => {
-            cntArea += room.getArea;
-        })
+        }
         
         return cntArea;
     }
 
     public getLivingArea(): number {
         let cntLivingArea: number = 0;
-        // let bedrooms: Bedroom[] = this.rooms.filter(room => room instanceof Bedroom);
-        // let livingRooms: LivingRoom[] = this.rooms.filter(room => room instanceof LivingRoom);
-        let bedrooms: Bedroom[] = this.createRoomsArr(Bedroom);
-        let livingRooms: LivingRoom[] = this.createRoomsArr(LivingRoom);
 
-        livingRooms.forEach(room => {
-            cntLivingArea += room.getArea;
-        })
-
-        bedrooms.forEach(room => {
-            cntLivingArea += room.getArea;
-        })
+        for (let room of this.rooms) {
+            if (room instanceof Bedroom || room instanceof LivingRoom) {
+                cntLivingArea += room.getArea;
+            }
+        }
 
         return cntLivingArea;
     }
 
     public getNbBedrooms(): number {
-        // return this.rooms.filter(room => room instanceof Bedroom).length;
         return this.countRooms(Bedroom);
     }
 
     public getNbWC(): number {
-        // let countWC: number = this.rooms.filter(room => room instanceof WC).length;
-        let countWC: number = this.countRooms(WC);
+        let countWC: number = 0;
 
-        // let countBathWC: number = this.rooms.filter(room => room instanceof Bathroom && room.getHasWC).length;
-        let countBathWC: number = 0;
-
-        this.rooms.forEach(room => {
-            if (room instanceof Bathroom && room.getHasWC) {
-                countBathWC++;
+        for (let room of this.rooms) {
+            if (room instanceof WC || (room instanceof Bathroom && room.getHasWC)) {
+                countWC++;
             }
-        })
+        }
 
-        return countWC + countBathWC;
+        return countWC;
     }
 
     public getNbTV(): number {
-        let livingRooms: LivingRoom[] = this.createRoomsArr(LivingRoom);
         let cntTV: number = 0;
         
-        livingRooms.forEach(room => {
-            if (room.getHasTV) {
+        for (let room of this.rooms) {
+            if (room instanceof LivingRoom && room.getHasTV) {
                 cntTV++;
             }
-        })
+        }
 
         return cntTV;
     }
+
+    public getNbBeds(): number {
+        let cnt: number = 0;
+        
+        for (let room of this.rooms) {
+            if (room instanceof Bedroom && room.getBeds) {
+                cnt += room.getBeds;
+            }
+        }
+
+        return cnt;
+    }
 }
-
-const home = new Home();
-// add and show bedrooms
-home.addRoom(new Bedroom(1, 10, 1));
-home.addRoom(new Bedroom(3, 12, 2));
-console.log('Number of bedrooms:', home.getNbBedrooms());
-
-// add kitchen
-home.addRoom(new Kitchen(1, 8));
-home.addRoom(new Kitchen(3, 12));
-
-// add bathroom
-home.addRoom(new Bathroom(1, 3, true));
-home.addRoom(new Bathroom(3, 5, true));
-
-// add wc
-home.addRoom(new WC(1, 3));
-
-// add living room and show living area
-home.addRoom(new LivingRoom(1, 20, true));
-home.addRoom(new LivingRoom(3, 24, false));
-console.log('Living are:', home.getLivingArea());
-
-// show floor area
-console.log('Area of the 1st floor: ', home.getFloorArea(1));
-console.log('Area of the 3rd floor: ', home.getFloorArea(3));
-
-// show total area
-console.log('Total area:', home.getTotalArea());
-
-// show wc number
-console.log('Total WC number:', home.getNbWC());
-
-// show tv number
-console.log('Total TW number:', home.getNbTV());
