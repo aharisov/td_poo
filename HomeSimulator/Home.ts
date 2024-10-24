@@ -12,10 +12,10 @@ export class Home {
         this.rooms.push(room);    
     }
 
-    public countRooms(rooms: Room[], needle: any): number {
+    public countRooms(needle: any): number {
         let cnt: number = 0;
 
-        rooms.forEach(room => {
+        this.rooms.forEach(room => {
             if (room instanceof needle) {
                 cnt++;
             }
@@ -24,10 +24,10 @@ export class Home {
         return cnt;
     }
 
-    public createRoomsArr(rooms: Room[], needle: any): any[] {
+    public createRoomsArr(needle: any): any[] {
         let arr: any[] = [];
 
-        rooms.forEach(room => {
+        this.rooms.forEach(room => {
             if (room instanceof needle) {
                 arr.push(room);
             }
@@ -47,10 +47,18 @@ export class Home {
     }
 
     public getFloorArea(floor: number): number {
-        let rooms: Room[] = this.rooms.filter(room => room.getFloor == floor);
+        // let rooms: Room[] = this.rooms.filter(room => room.getFloor == floor);
+        let floorRooms: Room[] = [];
+
         let cntArea: number = 0;
 
-        rooms.forEach(room => {
+        this.rooms.forEach(room => {
+            if (room.getFloor == floor) {
+                floorRooms.push(room);
+            }
+        })
+
+        floorRooms.forEach(room => {
             cntArea += room.getArea;
         })
         
@@ -61,8 +69,8 @@ export class Home {
         let cntLivingArea: number = 0;
         // let bedrooms: Bedroom[] = this.rooms.filter(room => room instanceof Bedroom);
         // let livingRooms: LivingRoom[] = this.rooms.filter(room => room instanceof LivingRoom);
-        let bedrooms: Bedroom[] = this.createRoomsArr(this.rooms, Bedroom);
-        let livingRooms: LivingRoom[] = this.createRoomsArr(this.rooms, LivingRoom);
+        let bedrooms: Bedroom[] = this.createRoomsArr(Bedroom);
+        let livingRooms: LivingRoom[] = this.createRoomsArr(LivingRoom);
 
         livingRooms.forEach(room => {
             cntLivingArea += room.getArea;
@@ -77,12 +85,12 @@ export class Home {
 
     public getNbBedrooms(): number {
         // return this.rooms.filter(room => room instanceof Bedroom).length;
-        return this.countRooms(this.rooms, Bedroom);
+        return this.countRooms(Bedroom);
     }
 
     public getNbWC(): number {
         // let countWC: number = this.rooms.filter(room => room instanceof WC).length;
-        let countWC: number = this.countRooms(this.rooms, WC);
+        let countWC: number = this.countRooms(WC);
 
         // let countBathWC: number = this.rooms.filter(room => room instanceof Bathroom && room.getHasWC).length;
         let countBathWC: number = 0;
@@ -97,7 +105,7 @@ export class Home {
     }
 
     public getNbTV(): number {
-        let livingRooms: LivingRoom[] = this.createRoomsArr(this.rooms, LivingRoom);
+        let livingRooms: LivingRoom[] = this.createRoomsArr(LivingRoom);
         let cntTV: number = 0;
         
         livingRooms.forEach(room => {
