@@ -1,15 +1,31 @@
-export class Grid {
-    private grid: string[][] = [];
-    private rows: number = 6;
-    private cols: number = 7;
+import { Token } from "./Token";
 
-    get getGrid() {
+export class Grid {
+    private grid: Token | undefined[][];
+    private rows: number;
+    private cols: number;
+
+    constructor() {
+        this.grid = [];
+        this.rows = 6,
+        this.cols = 7
+    }
+
+    get getGrid(): Token | undefined[][] {
         return this.grid;
     }
 
-    public makeMove(token: string, column: number): void {
+    get getRows(): number {
+        return this.rows;
+    }
+
+    get getCols(): number {
+        return this.cols;
+    }
+
+    public makeMove(token: Token, column: number): void {
         for (let i = this.rows - 1; i > -1; i--) {
-            if (this.grid[i][column - 1] == '') {
+            if (this.grid[i][column - 1] == undefined) {
                 this.grid[i][column - 1] = token;
 
                 break;
@@ -20,9 +36,9 @@ export class Grid {
     public createEmptyGrid(): void {
         for (let i = 0; i < this.rows; i++) {
             this.grid[i] = [];
-
+            
             for (let j = 0; j < this.cols; j++) {
-               this.grid[i][j] = '';
+               this.grid[i][j] = undefined;
             }
         }
     }
@@ -31,14 +47,16 @@ export class Grid {
         let gridHeader: string = '  1   2   3   4   5   6   7  \n';
         let gridTopBottomLine: string = '+---+---+---+---+---+---+---+\n';
         let gridRows: string = '';
-
+        
         // draw the grid
         for (let i = 0; i < this.rows; i++) {
             for (let j = 0; j < this.cols; j++) {
-                if (this.grid[i][j] != '') {
-                    gridRows += `| ${this.grid[i][j]} `;
-                } else {
+                if (this.grid[i][j] == undefined) {
                     gridRows += `|   `;
+                } 
+
+                if (this.grid[i][j] instanceof Token) {
+                    this.grid[i][j].color == 0 ? gridRows += `| o ` : gridRows += `| x `;
                 }
             }
             // draw the last column

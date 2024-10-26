@@ -1,11 +1,13 @@
-export class Token {
-    private color: string;
+import { TokenColor } from "./TokenColor";
 
-    constructor(color: string) {
+export class Token {
+    private color: TokenColor;
+
+    constructor(color: TokenColor) {
         this.color = color;
     }
 
-    get getColor(): string {
+    get getColor(): TokenColor {
         return this.color;
     }
 }

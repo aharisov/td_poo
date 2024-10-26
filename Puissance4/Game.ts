@@ -1,107 +1,123 @@
-const readlineSync = require('readline-sync');
+import { question } from 'readline-sync';
 import { Grid } from "./Grid";
 import { Token } from "./Token";
+import { TokenColor } from './TokenColor';
 
 export class Game {
-    private isGameFinished: boolean = false;
-    private readonly pionUser1: Token = new Token('jaune');
-    private readonly pionUser2: Token = new Token('rouge');
-    private currentUser: Token;
-    private currentPion: string;
-    private readonly gameGrid: Grid = new Grid();
-    private movesCounter: number = 0;
+    private isGameFinished: boolean;
+    private gameGrid: Grid;
+    private movesCounter: number;
     private winner: string;
+    private currentUser: Token;
+
+    constructor() {
+        this.gameGrid = new Grid();
+        this.currentUser = new Token(TokenColor.JAUNE);
+        this.isGameFinished = false;
+        this.movesCounter = 0;
+    }
 
     private isWinnerFound(): boolean {
-        let winCombination1: string = 'oooo';
-        let winCombination2: string = 'xxxx';
-        let grid: string[][] = this.gameGrid.getGrid;
+        let grid: Token | undefined[][] = this.gameGrid.getGrid;
 
         // get winner horizontally
-        for (let i = grid.length - 1; i > -1; i--) {
-            for (let j = 0; j < grid[i].length - 3; j++) {
-                if (grid[i].slice(j, j+4).join('') == winCombination1) {
-                    this.winner = 'user1';
-
+        for (let i = this.gameGrid.getRows - 1; i > -1; i--) {
+            let cnt: number = 0;
+            for (let j = 0; j < grid[i].length; j++) {
+                if (cnt == 3) {
                     return true;
-                } else if (grid[i].slice(j, j+4).join('') == winCombination2) {
-                    this.winner = 'user2';
+                }
+                
+                if (grid[i][j] == undefined || grid[i][j+1] == undefined) {
+                    continue;
+                }
 
-                    return true;
+                if (grid[i][j].color == grid[i][j+1].color) {
+                    cnt++;
+                    continue;
                 } else {
+                    cnt = 0;
                     continue;
                 }
             }
         }  
 
         // get winner vertically
-        for (let i = grid.length - 1; i >= 3; i--) {
-            let strTmp: string = '';
+        for (let i = 0; i < this.gameGrid.getCols; i++) {
+            let cnt: number = 0;
 
-            for (let j = 0; j < grid[i].length; j++) {
-                strTmp = grid[i][j] + grid[i-1][j] + grid[i-2][j] + grid[i-3][j];
-
-                if (strTmp == winCombination1) {
-                    this.winner = 'user1';
-
+            for (let j = this.gameGrid.getRows - 1; j > -1; j--) {
+                if (cnt == 3) {
                     return true;
-                } else if (strTmp == winCombination2) {
-                    this.winner = 'user2';
+                }
 
-                    return true;
+                if (grid[j][i] == undefined || grid[j-1][i] == undefined) {
+                    continue;
+                }
+                
+                if (grid[j][i].color == grid[j-1][i].color) {
+                    cnt++;
+                    continue;
                 } else {
+                    cnt = 0;
                     continue;
                 }
             }
         } 
 
         // get winner diagonally from left to right
-        for (let i = grid.length - 1; i >= 3; i--) {
-            let strTmp: string = '';
+        for (let i = 0; i < this.gameGrid.getCols; i++) {
+            let cnt: number = 0;
 
-            for (let j = 0; j < grid[i].length - 3; j++) {
-                strTmp = grid[i][j] + grid[i-1][j+1] + grid[i-2][j+2] + grid[i-3][j+3];
-
-                if (strTmp == winCombination1) {
-                    this.winner = 'user1';
-
+            for (let j = this.gameGrid.getRows - 1; j > -1; j--) {
+                if (cnt == 3) {
                     return true;
-                } else if (strTmp == winCombination2) {
-                    this.winner = 'user2';
+                }
 
-                    return true;
+                if (grid[j][i] == undefined || grid[j-1][i+1] == undefined) {
+                    continue;
+                }
+                
+                if (grid[j][i].color == grid[j-1][i+1].color) {
+                    i++;
+                    cnt++;
+                    continue;
                 } else {
+                    cnt = 0;
                     continue;
                 }
             }
-        }
+        } 
 
         // get winner diagonally from right to left
-        for (let i = grid.length - 1; i >= 3; i--) {
-            let strTmp: string = '';
+        for (let i = this.gameGrid.getCols - 1; i > -1; i--) {
+            let cnt: number = 0;
 
-            for (let j = grid[i].length - 1; j >= 3; j--) {
-                strTmp = grid[i][j] + grid[i-1][j-1] + grid[i-2][j-2] + grid[i-3][j-3];
-
-                if (strTmp == winCombination1) {
-                    this.winner = 'user1';
-
+            for (let j = this.gameGrid.getRows - 1; j > -1; j--) {
+                if (cnt == 3) {
                     return true;
-                } else if (strTmp == winCombination2) {
-                    this.winner = 'user2';
+                }
 
-                    return true;
+                if (grid[j][i] == undefined || grid[j-1][i-1] == undefined) {
+                    continue;
+                }
+                
+                if (grid[j][i].color == grid[j-1][i-1].color) {
+                    i--;
+                    cnt++;
+                    continue;
                 } else {
+                    cnt = 0;
                     continue;
                 }
             }
-        }
+        } 
 
         return false;
     }
 
     private isColumnFilled(column: number): boolean {
-        if (this.gameGrid.getGrid[0][column - 1] != '') {
+        if (this.gameGrid.getGrid[0][column - 1] != undefined) {
             return true;
         }
 
@@ -109,53 +125,52 @@ export class Game {
     }
 
     public startGame(): void {
-        // create empty grid
-        this.gameGrid.createEmptyGrid();
+        console.log(this.gameGrid.createEmptyGrid());
         // show grid
         console.log(this.gameGrid.showGrid());
-
+        
         // make moves until one of the users wins
         // or while there are empty places
         while(!this.isGameFinished) {
-            // get current user
-            this.currentUser == this.pionUser1 ? this.currentUser = this.pionUser2 : this.currentUser = this.pionUser1;
-            this.currentUser.getColor == 'jaune' ? this.currentPion = 'o' : this.currentPion = 'x';
-            
             // get column number
-            let colNumber = readlineSync.question('Entrez le numéro de colonne : ');
+            let colNumber: number = Number(question('Entrez le numéro de colonne : '));
             
             // check if input contains numbers
-            if (colNumber.match(/^[1-9]+$/) == null) {
-                colNumber = readlineSync.question('Il faut entrez les nombres entre 1 et 7 : ');
+            if (isNaN(colNumber)) {
+                colNumber = Number(question('Il faut entrez les nombres entre 1 et 7 : '));
             }
             // check if column is filled
             if (this.isColumnFilled(colNumber)) {
-                colNumber = readlineSync.question('Le colonne est rempli, choisissez autre : ');
+                colNumber = Number(question('Le colonne est rempli, choisissez autre : '));
             }
             
             // make move
-            this.gameGrid.makeMove(this.currentPion, colNumber);
+            this.gameGrid.makeMove(this.currentUser, colNumber);
 
             // show grid
             console.log('\n');
             console.log(this.gameGrid.showGrid());
 
-            this.movesCounter++;
-            
-            if (this.movesCounter > 6) {
+            if (this.movesCounter > 5) {
+                // check if there is a winner
                 if (this.isWinnerFound()) {
                     this.isGameFinished = true;
+                    break;
                 }
             }
+
+            // change current user
+            this.currentUser.getColor == TokenColor.JAUNE 
+                ? this.currentUser = new Token(TokenColor.ROUGE) : this.currentUser = new Token(TokenColor.JAUNE);
+
+            this.movesCounter++;
         }
 
         if (this.movesCounter == 42 && this.winner == undefined) {
             console.log(`Il n'y a pas de gagnant.`);    
         } else {
+            this.currentUser.getColor == 0 ? this.winner = 'jaune' : this.winner = 'rouge';
             console.log(`${this.winner} a gagné. Félicitations !`);
         }
     }
 }
-
-let game = new Game();
-game.startGame();
