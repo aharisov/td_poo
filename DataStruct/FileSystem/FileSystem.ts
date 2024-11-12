@@ -34,27 +34,79 @@ La classe SimFileSystem devrait avoir des méthodes :
 
 */
 
+import { SimDirectory } from "./SimDirectory";
+import { SimFile } from "./SimFile";
+import { Type } from "./Type";
+
 class SimFileSystem {
+    // private folders: SimDirectory[];
+    private currentFolder: SimDirectory;
+    private rootFolder: SimDirectory;
+    private currentLevel: number;
 
     constructor() {
+        // this.folders = [];
+        this.rootFolder = new SimDirectory("root", Type.FOLDER, undefined);
+        this.currentFolder = this.rootFolder;
+        this.currentLevel = 0;
     }
 
-    mkdir(directoryName: string): void {
+    public mkdir(directoryName: string): void {
+        this.currentFolder.addFolder(new SimDirectory(directoryName, Type.FOLDER, this.currentFolder));
     }
 
-    touch(fileName: string): void {
+    public touch(fileName: string): void {
+        this.currentFolder.addFile(new SimFile(fileName, Type.FILE, this.currentFolder));
     }
 
-    rm(elementName: string): void {
+    public rm(elementName: string): void {
+        this.currentFolder.removeElement(elementName);
     }
 
-    ls(recursive:boolean): string {
+    public ls(recursive:boolean): string {
         let res : string = "";
+
+        if (recursive) {
+            res += this.showFolderContents(this.currentFolder);
+            
+            for (let folder of this.currentFolder.getFolders()) {
+                this.cd(folder.getTitle());
+                res += this.showFolderContents(this.currentFolder);
+                this.cd('/');
+            }
+        } else {
+            res += this.showFolderContents(this.currentFolder);
+        }
+
         return res;
     }
 
-    cd(elementName: string):void{
+    public cd(elementName: string):void{
+        if (elementName == "/") {
+            this.currentFolder = this.rootFolder;
+        } else {
+            this.currentFolder = this.currentFolder.getFolders().filter(el => el.getTitle() == elementName)[0];
+        }
+    }
 
+    private showFolderContents(folder: SimDirectory): string {
+        let res: string = '';
+
+        if (this.currentFolder.getFolders().length == 0 && this.currentFolder.getFiles().length == 0) {
+            return '';
+        }
+
+        res += `Contents of directory ${folder.getTitle()}:\n`;
+            
+        for (let item of folder.getFolders()) {
+            res += `${item.getTitle()}\n`;
+        }
+
+        for (let file of folder.getFiles()) {
+            res += `${file.getTitle()}\n`;
+        }
+
+        return res;
     }
 }
 

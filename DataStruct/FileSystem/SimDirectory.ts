@@ -29,4 +29,19 @@ export class SimDirectory extends SimFileSystemElement {
     public addFile(child: SimFile): void {
         this.files.push(child);
     }
+
+    public removeElement(title: string): void {
+        let tmpFolders: SimDirectory[] = [];
+        let tmpFiles: SimFile[] = [];
+        tmpFolders = this.folders.filter(el => el.getTitle() != title);
+        tmpFiles = this.files.filter(el => el.getTitle() != title);
+
+        if (tmpFolders.length > 0) {
+            this.folders = tmpFolders;
+        }
+
+        if (tmpFiles.length > 0) {
+            this.files = tmpFiles;
+        }
+    }
 }
